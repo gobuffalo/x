@@ -1,5 +1,9 @@
 # github.com/gobuffalo/x/responder
 
+```bash
+$ go get -u github.com/gobuffalo/x/responder
+```
+
 This packages allows you to easily write "responders" that trigger different functions based on the incoming request `Content-Type` header.
 
 For example, if you have a `UserList` `buffalo.Handler` that you want to be able to respond differently to `HTML` or `JSON` you can write a couple of responder functions that handle those different requests.
