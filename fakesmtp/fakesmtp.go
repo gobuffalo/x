@@ -1,4 +1,4 @@
-package mailer_test
+package fakesmtp
 
 import (
 	"bufio"
@@ -8,7 +8,6 @@ import (
 	"time"
 )
 
-var listening bool
 var LastMessage string
 
 type Client struct {
@@ -32,26 +31,27 @@ func (c *Client) read() string {
 	return reply
 }
 
-func appendToFile(text string) {
+func addToMessage(text string) {
 	LastMessage = LastMessage + text
 }
 
 func handleClient(c *Client) {
 	LastMessage = ""
-	c.write("220 Welcome to the Jungle")
+	c.write("220 Welcome")
 	text := c.read()
-	appendToFile(text)
-	c.write("250 No one says helo anymore")
+	addToMessage(text)
+	c.write("250 Received")
 	text = c.read()
-	appendToFile(text)
+	addToMessage(text)
 	c.write("250 Sender")
+
 	text = c.read()
-	appendToFile(text)
+	addToMessage(text)
 
 	c.write("250 Recipient")
 	text = c.read()
 	for strings.Contains(text, "RCPT") {
-		appendToFile(text)
+		addToMessage(text)
 		c.write("250 Recipient")
 		text = c.read()
 	}
@@ -61,7 +61,7 @@ func handleClient(c *Client) {
 	for {
 		text = c.read()
 		bytes := []byte(text)
-		appendToFile(text)
+		addToMessage(text)
 		// 46 13 10
 		if bytes[0] == 46 && bytes[1] == 13 && bytes[2] == 10 {
 			break
@@ -71,8 +71,8 @@ func handleClient(c *Client) {
 	c.conn.Close()
 }
 
-func StartSMTPServer(port string) {
-	listening = true
+//Start listens for connections on the given port
+func Start(port string) {
 	go func() {
 		listener, err := net.Listen("tcp", "0.0.0.0:"+port)
 		if err != nil {
@@ -80,7 +80,7 @@ func StartSMTPServer(port string) {
 			return
 		}
 
-		for listening {
+		for {
 			conn, err := listener.Accept()
 			if err != nil {
 				continue
@@ -96,6 +96,7 @@ func StartSMTPServer(port string) {
 	}()
 }
 
-func StopSMTPServer() {
-	listening = false
+//Stop stops listening.
+func Stop() {
+	//listening = false
 }

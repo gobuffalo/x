@@ -4,11 +4,12 @@ import (
 	"testing"
 
 	"github.com/gobuffalo/buffalo/render"
+	server "github.com/gobuffalo/x/fakesmtp"
 	"github.com/gobuffalo/x/mailer"
 	"github.com/stretchr/testify/require"
 )
 
-var smtp mailer.Deliverer
+var sender mailer.Deliverer
 var rend *render.Engine
 
 const smtpPort = "9807"
@@ -18,8 +19,8 @@ func init() {
 }
 
 func TestSendPlain(t *testing.T) {
-	StartSMTPServer(smtpPort)
-	defer StopSMTPServer()
+	server.Start(smtpPort)
+	defer server.Stop()
 
 	r := require.New(t)
 	smtp, err := mailer.NewSMTPMailer(smtpPort, "127.0.0.1", "username", "password")
@@ -36,12 +37,12 @@ func TestSendPlain(t *testing.T) {
 
 	err = smtp.Deliver(m)
 
-	r.Contains(LastMessage, "FROM:<mark@example.com>")
-	r.Contains(LastMessage, "RCPT TO:<other@other.com>")
-	r.Contains(LastMessage, "RCPT TO:<my@other.com>")
-	r.Contains(LastMessage, "RCPT TO:<secret@other.com>")
-	r.Contains(LastMessage, "Subject: Cool Message")
-	r.Contains(LastMessage, "Cc: other@other.com, my@other.com")
-	r.Contains(LastMessage, "Content-Type: text/plain")
-	r.Contains(LastMessage, "Hello Antonio")
+	r.Contains(server.LastMessage, "FROM:<mark@example.com>")
+	r.Contains(server.LastMessage, "RCPT TO:<other@other.com>")
+	r.Contains(server.LastMessage, "RCPT TO:<my@other.com>")
+	r.Contains(server.LastMessage, "RCPT TO:<secret@other.com>")
+	r.Contains(server.LastMessage, "Subject: Cool Message")
+	r.Contains(server.LastMessage, "Cc: other@other.com, my@other.com")
+	r.Contains(server.LastMessage, "Content-Type: text/plain")
+	r.Contains(server.LastMessage, "Hello Antonio")
 }
