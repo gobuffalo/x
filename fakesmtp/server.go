@@ -14,21 +14,20 @@ type Server struct {
 
 //Start listens for connections on the given port
 func (s *Server) Start(port string) error {
+	for {
+		conn, err := s.Listener.Accept()
+		if err != nil {
+			return err
+		}
 
-	conn, err := s.Listener.Accept()
-	if err != nil {
-		return err
+		s.Handle(&Connection{
+			conn:    conn,
+			address: conn.RemoteAddr().String(),
+			time:    time.Now().Unix(),
+			bufin:   bufio.NewReader(conn),
+			bufout:  bufio.NewWriter(conn),
+		})
 	}
-
-	s.Handle(&Connection{
-		conn:    conn,
-		address: conn.RemoteAddr().String(),
-		time:    time.Now().Unix(),
-		bufin:   bufio.NewReader(conn),
-		bufout:  bufio.NewWriter(conn),
-	})
-
-	return nil
 }
 
 func (s *Server) Handle(c *Connection) {
