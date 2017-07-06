@@ -1,7 +1,6 @@
 package mailer_test
 
 import (
-	"log"
 	"testing"
 
 	"github.com/gobuffalo/buffalo/render"
@@ -19,8 +18,8 @@ func init() {
 }
 
 func TestSendPlain(t *testing.T) {
-	StartServer(smtpPort)
-	defer StopServer()
+	StartSMTPServer(smtpPort)
+	defer StopSMTPServer()
 
 	r := require.New(t)
 	smtp, err := mailer.NewSMTPMailer(smtpPort, "127.0.0.1", "username", "password")
@@ -45,6 +44,4 @@ func TestSendPlain(t *testing.T) {
 	r.Contains(LastMessage, "Cc: other@other.com, my@other.com")
 	r.Contains(LastMessage, "Content-Type: text/plain")
 	r.Contains(LastMessage, "Hello Antonio")
-
-	log.Println(LastMessage)
 }

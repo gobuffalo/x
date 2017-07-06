@@ -71,7 +71,7 @@ func handleClient(c *Client) {
 	c.conn.Close()
 }
 
-func StartServer(port string) {
+func StartSMTPServer(port string) {
 	listening = true
 	go func() {
 		listener, err := net.Listen("tcp", "0.0.0.0:"+port)
@@ -96,6 +96,6 @@ func StartServer(port string) {
 	}()
 }
 
-func StopServer() {
+func StopSMTPServer() {
 	listening = false
 }
