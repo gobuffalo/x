@@ -2,7 +2,6 @@ package mailer_test
 
 import (
 	"bytes"
-	"log"
 	"testing"
 
 	"github.com/gobuffalo/buffalo/render"
@@ -20,15 +19,14 @@ const smtpPort = "2002"
 func init() {
 	rend = render.New(render.Options{})
 	smtpServer, _ = fakesmtp.NewServer(smtpPort)
+	sender, _ = mailer.NewSMTPMailer(smtpPort, "127.0.0.1", "username", "password")
+
 	go smtpServer.Start(smtpPort)
 }
 
 func TestSendPlain(t *testing.T) {
 	smtpServer.Clear()
-
 	r := require.New(t)
-	smtp, err := mailer.NewSMTPMailer(smtpPort, "127.0.0.1", "username", "password")
-	r.Nil(err)
 
 	m := mailer.Message{
 		From:    "mark@example.com",
@@ -42,10 +40,10 @@ func TestSendPlain(t *testing.T) {
 	m.AddBody(rend.String("Hello <%= Name %>"), render.Data{"Name": "Antonio"})
 	r.Equal(m.Body, []byte("Hello Antonio"))
 
-	err = smtp.Deliver(m)
-	lastMessage := smtpServer.LastMessage()
+	err := sender.Deliver(m)
+	r.Nil(err)
 
-	log.Println(smtpServer.Messages)
+	lastMessage := smtpServer.LastMessage()
 
 	r.Contains(lastMessage, "FROM:<mark@example.com>")
 	r.Contains(lastMessage, "RCPT TO:<other@other.com>")

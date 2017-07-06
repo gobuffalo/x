@@ -4,12 +4,14 @@ import (
 	"bufio"
 	"net"
 	"strings"
+	"sync"
 	"time"
 )
 
 type Server struct {
-	Messages []string
 	Listener net.Listener
+	messages []string
+	mutex    sync.Mutex
 }
 
 //Start listens for connections on the given port
@@ -31,7 +33,10 @@ func (s *Server) Start(port string) error {
 }
 
 func (s *Server) Handle(c *Connection) {
-	s.Messages = append(s.Messages, "")
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	s.messages = append(s.messages, "")
 
 	s.readHello(c)
 	s.readSender(c)
@@ -83,23 +88,30 @@ func (s *Server) readData(c *Connection) {
 }
 
 func (s *Server) AddMessageLine(text string) {
-	s.Messages[len(s.Messages)-1] = s.LastMessage() + text
+	s.messages[len(s.Messages())-1] = s.LastMessage() + text
 }
 
 func (s *Server) LastMessage() string {
-	if len(s.Messages) == 0 {
+	if len(s.Messages()) == 0 {
 		return ""
 	}
 
-	return s.Messages[len(s.Messages)-1]
+	return s.Messages()[len(s.Messages())-1]
+}
+
+func (s *Server) Messages() []string {
+	return s.messages
 }
 
 func (s *Server) Clear() {
-	s.Messages = []string{}
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	s.messages = []string{}
 }
 
 func NewServer(port string) (*Server, error) {
-	s := &Server{Messages: []string{}}
+	s := &Server{messages: []string{}}
 
 	listener, err := net.Listen("tcp", "0.0.0.0:"+port)
 	if err != nil {

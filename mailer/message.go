@@ -29,7 +29,7 @@ type Attachment struct {
 	ContentType string
 }
 
-// AddBody the message by receiving a renderer and rendering data.
+//AddBody the message by receiving a renderer and rendering data.
 func (m *Message) AddBody(r render.Renderer, data render.Data) error {
 	buf := bytes.NewBuffer([]byte{})
 	err := r.Render(buf, data)
