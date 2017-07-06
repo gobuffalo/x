@@ -15,28 +15,29 @@ var sender mailer.Deliverer
 var rend *render.Engine
 var smtpServer *fakesmtp.Server
 
-const smtpPort = "9807"
+const smtpPort = "2002"
 
 func init() {
 	rend = render.New(render.Options{})
+	smtpServer, _ = fakesmtp.NewServer(smtpPort)
+	go smtpServer.Start(smtpPort)
 }
 
 func TestSendPlain(t *testing.T) {
+	smtpServer.Clear()
+
 	r := require.New(t)
-
-	smtpServer, err := fakesmtp.NewServer(smtpPort)
-	go smtpServer.Start(smtpPort)
-
-	r.Nil(err)
 	smtp, err := mailer.NewSMTPMailer(smtpPort, "127.0.0.1", "username", "password")
 	r.Nil(err)
 
-	m := mailer.NewMessage()
-	m.From = "mark@example.com"
-	m.To = []string{"something@something.com"}
-	m.Subject = "Cool Message"
-	m.CC = []string{"other@other.com", "my@other.com"}
-	m.Bcc = []string{"secret@other.com"}
+	m := mailer.Message{
+		From:    "mark@example.com",
+		To:      []string{"something@something.com"},
+		Subject: "Cool Message",
+		CC:      []string{"other@other.com", "my@other.com"},
+		Bcc:     []string{"secret@other.com"},
+	}
+
 	m.AddAttachment("someFile.txt", "text/plain", bytes.NewBuffer([]byte("hello")))
 	m.AddBody(rend.String("Hello <%= Name %>"), render.Data{"Name": "Antonio"})
 	r.Equal(m.Body, []byte("Hello Antonio"))
