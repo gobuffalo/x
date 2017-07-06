@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+//Server is our fake server that will be listening for SMTP connections.
 type Server struct {
 	Listener net.Listener
 	messages []string
