@@ -3,6 +3,7 @@ package fakesmtp
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"net"
 	"strings"
 	"time"
@@ -76,23 +77,23 @@ func Start(port string) {
 	go func() {
 		listener, err := net.Listen("tcp", "0.0.0.0:"+port)
 		if err != nil {
-			fmt.Println("run as root")
+			fmt.Println("Could not start listener")
 			return
 		}
 
-		for {
-			conn, err := listener.Accept()
-			if err != nil {
-				continue
-			}
-			go handleClient(&Client{
-				conn:    conn,
-				address: conn.RemoteAddr().String(),
-				time:    time.Now().Unix(),
-				bufin:   bufio.NewReader(conn),
-				bufout:  bufio.NewWriter(conn),
-			})
+		conn, err := listener.Accept()
+		if err != nil {
+			log.Fatal(err)
 		}
+
+		go handleClient(&Client{
+			conn:    conn,
+			address: conn.RemoteAddr().String(),
+			time:    time.Now().Unix(),
+			bufin:   bufio.NewReader(conn),
+			bufout:  bufio.NewWriter(conn),
+		})
+
 	}()
 }
 
