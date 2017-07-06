@@ -19,8 +19,7 @@ func init() {
 }
 
 func TestSendPlain(t *testing.T) {
-	server.Start(smtpPort)
-	defer server.Stop()
+	server.WaitForMessage(smtpPort)
 
 	r := require.New(t)
 	smtp, err := mailer.NewSMTPMailer(smtpPort, "127.0.0.1", "username", "password")

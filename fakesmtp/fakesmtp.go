@@ -73,7 +73,7 @@ func handleClient(c *Client) {
 }
 
 //Start listens for connections on the given port
-func Start(port string) {
+func WaitForMessage(port string) {
 	go func() {
 		listener, err := net.Listen("tcp", "0.0.0.0:"+port)
 		if err != nil {
@@ -86,7 +86,7 @@ func Start(port string) {
 			log.Fatal(err)
 		}
 
-		go handleClient(&Client{
+		handleClient(&Client{
 			conn:    conn,
 			address: conn.RemoteAddr().String(),
 			time:    time.Now().Unix(),
@@ -95,9 +95,4 @@ func Start(port string) {
 		})
 
 	}()
-}
-
-//Stop stops listening.
-func Stop() {
-	//listening = false
 }
