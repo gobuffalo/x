@@ -38,7 +38,7 @@ func TestSendPlain(t *testing.T) {
 	m.CC = []string{"other@other.com", "my@other.com"}
 	m.Bcc = []string{"secret@other.com"}
 	m.AddAttachment("someFile.txt", "text/plain", bytes.NewBuffer([]byte("hello")))
-	m.AddBody(rend.String("Hello <%= Name %>"), render.Data{"Name": "Antonio"}, "text/plain")
+	m.AddBody(rend.String("Hello <%= Name %>"), render.Data{"Name": "Antonio"})
 	r.Equal(m.Body, []byte("Hello Antonio"))
 
 	err = smtp.Deliver(m)
