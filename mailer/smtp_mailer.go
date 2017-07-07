@@ -54,7 +54,16 @@ func NewSMTPMailer(port string, host string, user string, password string) (SMTP
 		return SMTPMailer{}, errors.New("invalid port for the SMTP mailer")
 	}
 
-	dialer := gomail.NewDialer(host, iport, user, password)
+	dialer := &gomail.Dialer{
+		Host: host,
+		Port: iport,
+	}
+
+	if user != "" {
+		dialer.Username = user
+		dialer.Password = password
+	}
+
 	return SMTPMailer{
 		Dialer: dialer,
 	}, nil
