@@ -1,7 +1,7 @@
 package fakesmtp
 
 // This server is inspired by https://github.com/andrewarrow/jungle_smtp
-// and most of its functionallities have been taken from the original repo and updated to
+// and most of its functionality have been taken from the original repo and updated to
 // work better for buffalo.
 
 import (
@@ -125,8 +125,8 @@ func (s *Server) Clear() {
 	s.messages = []string{}
 }
 
-//NewServer returns a pointer to a new Server instance listening on the given port.
-func NewServer(port string) (*Server, error) {
+//New returns a pointer to a new Server instance listening on the given port.
+func New(port string) (*Server, error) {
 	s := &Server{messages: []string{}}
 
 	listener, err := net.Listen("tcp", "0.0.0.0:"+port)

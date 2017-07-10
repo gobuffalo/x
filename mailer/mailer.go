@@ -1,6 +1,6 @@
 package mailer
 
-//Deliverer interface for any upcomming mailers.
-type Deliverer interface {
-	Deliver(Message) error
+//Sender interface for any upcomming mailers.
+type Sender interface {
+	Send(Message) error
 }

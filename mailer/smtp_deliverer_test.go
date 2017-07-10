@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var sender mailer.Deliverer
+var sender mailer.Sender
 var rend *render.Engine
 var smtpServer *fakesmtp.Server
 
@@ -18,8 +18,8 @@ const smtpPort = "2002"
 
 func init() {
 	rend = render.New(render.Options{})
-	smtpServer, _ = fakesmtp.NewServer(smtpPort)
-	sender, _ = mailer.NewSMTPDeliverer("127.0.0.1", smtpPort, "username", "password")
+	smtpServer, _ = fakesmtp.New(smtpPort)
+	sender, _ = mailer.NewSMTPSender("127.0.0.1", smtpPort, "username", "password")
 
 	go smtpServer.Start(smtpPort)
 }
@@ -40,7 +40,7 @@ func TestSendPlain(t *testing.T) {
 	m.AddBody(rend.String("Hello <%= Name %>"), render.Data{"Name": "Antonio"})
 	r.Equal(m.Bodies[0].Content, "Hello Antonio")
 
-	err := sender.Deliver(m)
+	err := sender.Send(m)
 	r.Nil(err)
 
 	lastMessage := smtpServer.LastMessage()
