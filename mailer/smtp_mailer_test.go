@@ -19,7 +19,7 @@ const smtpPort = "2002"
 func init() {
 	rend = render.New(render.Options{})
 	smtpServer, _ = fakesmtp.NewServer(smtpPort)
-	sender, _ = mailer.NewSMTPMailer(smtpPort, "127.0.0.1", "username", "password")
+	sender, _ = mailer.NewSMTPMailer("127.0.0.1", smtpPort, "username", "password")
 
 	go smtpServer.Start(smtpPort)
 }

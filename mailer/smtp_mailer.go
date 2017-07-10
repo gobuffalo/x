@@ -47,7 +47,7 @@ func (sm SMTPMailer) Deliver(message Message) error {
 }
 
 //NewSMTPMailer builds a SMTP Mailer based in passed config.
-func NewSMTPMailer(port string, host string, user string, password string) (SMTPMailer, error) {
+func NewSMTPMailer(host string, port string, user string, password string) (SMTPMailer, error) {
 	iport, err := strconv.Atoi(port)
 
 	if err != nil {

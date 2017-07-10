@@ -1,5 +1,9 @@
 package fakesmtp
 
+// This server is inspired by https://github.com/andrewarrow/jungle_smtp
+// and most of its functionallities have been taken from the original repo and updated to
+// work better for buffalo.
+
 import (
 	"bufio"
 	"net"
