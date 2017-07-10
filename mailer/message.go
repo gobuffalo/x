@@ -50,6 +50,18 @@ func (m *Message) AddBody(r render.Renderer, data render.Data) error {
 	return nil
 }
 
+//AddBodies Allows to add multiple bodies to the message, it returns errors that could happen in the rendering.
+func (m *Message) AddBodies(data render.Data, renderers ...render.Renderer) error {
+	for _, r := range renderers {
+		err := m.AddBody(r, data)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 //AddAttachment adds the attachment to the list of attachments the Message has.
 func (m *Message) AddAttachment(name, contentType string, r io.Reader) error {
 	m.Attachments = append(m.Attachments, Attachment{
