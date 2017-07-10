@@ -8,13 +8,13 @@ import (
 	gomail "gopkg.in/gomail.v2"
 )
 
-//SMTPMailer allows to send Emails by connecting to a SMTP server.
-type SMTPMailer struct {
+//SMTPDeliverer allows to send Emails by connecting to a SMTP server.
+type SMTPDeliverer struct {
 	Dialer *gomail.Dialer
 }
 
 //Deliver a message using SMTP configuration or returns an error if something goes wrong.
-func (sm SMTPMailer) Deliver(message Message) error {
+func (sm SMTPDeliverer) Deliver(message Message) error {
 	m := gomail.NewMessage()
 
 	m.SetHeader("From", message.From)
@@ -56,12 +56,12 @@ func (sm SMTPMailer) Deliver(message Message) error {
 	return nil
 }
 
-//NewSMTPMailer builds a SMTP Mailer based in passed config.
-func NewSMTPMailer(host string, port string, user string, password string) (SMTPMailer, error) {
+//NewSMTPDeliverer builds a SMTP Mailer based in passed config.
+func NewSMTPDeliverer(host string, port string, user string, password string) (SMTPDeliverer, error) {
 	iport, err := strconv.Atoi(port)
 
 	if err != nil {
-		return SMTPMailer{}, errors.New("invalid port for the SMTP mailer")
+		return SMTPDeliverer{}, errors.New("invalid port for the SMTP mailer")
 	}
 
 	dialer := &gomail.Dialer{
@@ -74,7 +74,7 @@ func NewSMTPMailer(host string, port string, user string, password string) (SMTP
 		dialer.Password = password
 	}
 
-	return SMTPMailer{
+	return SMTPDeliverer{
 		Dialer: dialer,
 	}, nil
 }
