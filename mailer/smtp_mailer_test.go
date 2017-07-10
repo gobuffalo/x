@@ -38,7 +38,7 @@ func TestSendPlain(t *testing.T) {
 
 	m.AddAttachment("someFile.txt", "text/plain", bytes.NewBuffer([]byte("hello")))
 	m.AddBody(rend.String("Hello <%= Name %>"), render.Data{"Name": "Antonio"})
-	r.Equal(m.Body, []byte("Hello Antonio"))
+	r.Equal(m.Bodies[0].Content, "Hello Antonio")
 
 	err := sender.Deliver(m)
 	r.Nil(err)

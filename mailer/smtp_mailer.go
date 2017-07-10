@@ -23,7 +23,17 @@ func (sm SMTPMailer) Deliver(message Message) error {
 	m.SetHeader("Cc", message.CC...)
 	m.SetHeader("Bcc", message.Bcc...)
 
-	m.SetBody(message.ContentType, string(message.Body), gomail.SetPartEncoding(gomail.Unencoded))
+	if len(message.Bodies) > 0 {
+		mainBody := message.Bodies[0]
+		m.SetBody(mainBody.ContentType, mainBody.Content, gomail.SetPartEncoding(gomail.Unencoded))
+	}
+
+	if len(message.Bodies) > 1 {
+		for i := 1; i < len(message.Bodies); i++ {
+			alt := message.Bodies[i]
+			m.AddAlternative(alt.ContentType, alt.Content, gomail.SetPartEncoding(gomail.Unencoded))
+		}
+	}
 
 	for _, at := range message.Attachments {
 		settings := gomail.SetCopyFunc(func(w io.Writer) error {

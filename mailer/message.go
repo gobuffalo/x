@@ -16,10 +16,13 @@ type Message struct {
 	Bcc     []string
 	Subject string
 
-	Body        []byte
-	ContentType string
-
+	Bodies      []messageBody
 	Attachments []Attachment
+}
+
+type messageBody struct {
+	Content     string
+	ContentType string
 }
 
 //Attachment are files added into a email message.
@@ -29,7 +32,8 @@ type Attachment struct {
 	ContentType string
 }
 
-//AddBody the message by receiving a renderer and rendering data.
+// AddBody the message by receiving a renderer and rendering data, first message will be
+// used as the main message Body rest of them will be passed as alternative bodies on the email.
 func (m *Message) AddBody(r render.Renderer, data render.Data) error {
 	buf := bytes.NewBuffer([]byte{})
 	err := r.Render(buf, data)
@@ -38,8 +42,11 @@ func (m *Message) AddBody(r render.Renderer, data render.Data) error {
 		return err
 	}
 
-	m.Body = buf.Bytes()
-	m.ContentType = r.ContentType()
+	m.Bodies = append(m.Bodies, messageBody{
+		Content:     string(buf.Bytes()),
+		ContentType: r.ContentType(),
+	})
+
 	return nil
 }
 
