@@ -16,16 +16,17 @@ type Message struct {
 	Bcc     []string
 	Subject string
 
-	Bodies      []messageBody
+	Bodies      []Body
 	Attachments []Attachment
 }
 
-type messageBody struct {
+// Body represents one of the bodies in the Message could be main or alternative
+type Body struct {
 	Content     string
 	ContentType string
 }
 
-//Attachment are files added into a email message.
+// Attachment are files added into a email message
 type Attachment struct {
 	Name        string
 	Reader      io.Reader
@@ -33,7 +34,8 @@ type Attachment struct {
 }
 
 // AddBody the message by receiving a renderer and rendering data, first message will be
-// used as the main message Body rest of them will be passed as alternative bodies on the email.
+// used as the main message Body rest of them will be passed as alternative bodies on the
+// email message
 func (m *Message) AddBody(r render.Renderer, data render.Data) error {
 	buf := bytes.NewBuffer([]byte{})
 	err := r.Render(buf, data)
@@ -42,7 +44,7 @@ func (m *Message) AddBody(r render.Renderer, data render.Data) error {
 		return err
 	}
 
-	m.Bodies = append(m.Bodies, messageBody{
+	m.Bodies = append(m.Bodies, Body{
 		Content:     string(buf.Bytes()),
 		ContentType: r.ContentType(),
 	})
@@ -50,7 +52,8 @@ func (m *Message) AddBody(r render.Renderer, data render.Data) error {
 	return nil
 }
 
-//AddBodies Allows to add multiple bodies to the message, it returns errors that could happen in the rendering.
+// AddBodies Allows to add multiple bodies to the message, it returns errors that
+// could happen in the rendering.
 func (m *Message) AddBodies(data render.Data, renderers ...render.Renderer) error {
 	for _, r := range renderers {
 		err := m.AddBody(r, data)
