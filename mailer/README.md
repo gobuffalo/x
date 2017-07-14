@@ -2,14 +2,14 @@
 
 This package is intended to allow easy Email sending with Buffalo, it allows you to define your custom `mailer.Sender` for the provider you would like to use.
 
-The following is an example on how to use this package with your Buffalo app:
+The following is an example on how to setup a smtp mailer as well as creating a Mailer function to use the 
 
 ```go
 //actions/mailer.go
 
 import (
     "github.com/gobuffalo/x/mailer"
-    "github.com/gobuffalo/buffalo/render"ç
+    "github.com/gobuffalo/buffalo/render"
     "github.com/gobuffalo/packr"
     "github.com/me/myapp/models"
     "github.com/pkg/errors"
@@ -37,15 +37,20 @@ func init() {
 
 //SendContactMessage Sends contact message to contact@myapp.com
 func SendContactMessage(c *models.Contact) error {
+    
+    //Creates a new message
 	m := mailer.NewMessage()
+    m.From = "sender@myapp.com"
 	m.Subject = "New Contact"
     m.To = []string {"contact@myapp.com"}
-
+    
+    // Data that will be used inside the templates when rendering.
 	data := map[string]interface{}{
 		"contact": c,
 	}
 	
-    err := m.AddBodies(data, r.HTML("mail/contact.md"), r.Plain("mail/contact.md"))
+    // You can add multiple bodies to the message you're creating to have content-types alternatives.
+    err := m.AddBodies(data, r.HTML("mail/contact.html"), r.Plain("mail/contact.txt"))
 
 	if err != nil {
 		return errors.WithStack(err)
@@ -55,3 +60,21 @@ func SendContactMessage(c *models.Contact) error {
 }
 
 ```
+
+This `SendContactMessage` could be called by one of your actions, p.e. the action that handles your contact form submission.
+
+```go
+//actions/contact.go
+...
+
+func ContactFormHandler(c buffalo.Context) error {
+    contact := &models.Contact{}
+    c.Bind(contact)
+    
+    //Calling to send the message
+    SendContactMessage(contact)
+    return c.Redirect(302, "contact/thanks")
+}
+...
+```
+
