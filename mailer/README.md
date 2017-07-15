@@ -9,7 +9,6 @@ The following is an example on how to setup a smtp mailer as well as creating a 
 
 import (
     "github.com/gobuffalo/x/mailer"
-    "github.com/gobuffalo/buffalo/render"
     "github.com/gobuffalo/packr"
     "github.com/me/myapp/models"
     "github.com/pkg/errors"
@@ -29,10 +28,6 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	r = render.New(render.Options{
-		TemplatesBox: packr.NewBox("../templates"),
-	})
 }
 
 //SendContactMessage Sends contact message to contact@myapp.com
@@ -60,7 +55,7 @@ func SendContactMessage(c *models.Contact) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-    
+
 	return nil
 }
 
@@ -83,3 +78,28 @@ func ContactFormHandler(c buffalo.Context) error {
 ...
 ```
 
+If you're using Gmail or need to configure your SMTP connection you can use the Dialer property on the SMTPSender, p.e: (for Gmail)
+
+```go
+...
+var smtp mailer.Sender
+
+func init() {
+    port := envy.Get("SMTP_PORT", "465") 
+    // or 587 with TLS 
+
+	host := envy.Get("SMTP_HOST", "smtp.gmail.com")
+	user := envy.Get("SMTP_USER", "your@email.com")
+	password := envy.Get("SMTP_PASSWORD", "yourp4ssw0rd")
+
+	var err error
+	sender, err := mailer.NewSMTPSender(host, port, user, password)
+	sender.Dialer.SSL = true
+
+    //or if TLS
+    sender.Dialer.TLSConfig = &tls.Config{...}
+    
+    smtp = sender
+}
+...
+```
