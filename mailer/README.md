@@ -48,7 +48,7 @@ func init() {
 }
 
 //SendContactMessage Sends contact message to contact@myapp.com
-func SendContactMessage(c *models.User) error {
+func SendContactMessage(c *models.Contact) error {
 
 	//Creates a new message
 	m := mailer.NewMessage()
