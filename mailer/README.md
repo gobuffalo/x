@@ -17,7 +17,7 @@ import (
 	"github.com/gobuffalo/plush"
 	"github.com/gobuffalo/x/mailer"
 	"github.com/pkg/errors"
-	"gitlab.com/wawandco/bg/models"
+	"gitlab.com/wawandco/app/models"
 )
 
 var smtp mailer.Sender
@@ -38,12 +38,9 @@ func init() {
 		log.Fatal(err)
 	}
 	
-	//The rendereing engine, usually in actions/render.go
+	//The rendering engine, this is usually generated inside actions/render.go in your buffalo app.
 	r = render.New(render.Options{
-		HTMLLayout:     "application.html",
-		TemplateEngine: plush.BuffaloRenderer,
 		TemplatesBox:   packr.NewBox("../templates"),
-		Helpers:        map[string]interface{}{},
 	})
 }
 
