@@ -12,9 +12,11 @@ import (
     "github.com/gobuffalo/packr"
     "github.com/me/myapp/models"
     "github.com/pkg/errors"
+	"github.com/gobuffalo/buffalo/render"
 )
 
 var smtp mailer.Sender
+var r *render.Engine
 
 func init() {
 	port := envy.Get("SMTP_PORT", "1025")
@@ -27,6 +29,13 @@ func init() {
 
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	r = render.New(render.Options{
+		HTMLLayout:     "application.html",
+		TemplateEngine: plush.BuffaloRenderer,
+		TemplatesBox:   packr.NewBox("../templates"),
+		Helpers: map[string]interface{}{},
 	}
 }
 
