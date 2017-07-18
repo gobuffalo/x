@@ -1,11 +1,11 @@
-# github.com/gobuffalo/x/mailer
+# github.com/gobuffalo/x/mail
 
-This package is intended to allow easy Email sending with Buffalo, it allows you to define your custom `mailer.Sender` for the provider you would like to use.
+This package is intended to allow easy Email sending with Buffalo, it allows you to define your custom `mail.Sender` for the provider you would like to use.
 
-The following is an example on how to setup a smtp mailer as well as creating a Mailer function to use the 
+The following is an example on how to setup a smtp mailer as well as creating a Mailer function to use the
 
 ```go
-//actions/mailer.go
+//actions/mail.go
 package x
 
 import (
@@ -15,16 +15,16 @@ import (
 	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/packr"
 	"github.com/gobuffalo/plush"
-	"github.com/gobuffalo/x/mailer"
+	"github.com/gobuffalo/x/mail"
 	"github.com/pkg/errors"
 	"gitlab.com/wawandco/app/models"
 )
 
-var smtp mailer.Sender
+var smtp mail.Sender
 var r *render.Engine
 
 func init() {
-	
+
 	//Pulling config from the env.
 	port := envy.Get("SMTP_PORT", "1025")
 	host := envy.Get("SMTP_HOST", "localhost")
@@ -32,12 +32,12 @@ func init() {
 	password := envy.Get("SMTP_PASSWORD", "")
 
 	var err error
-	smtp, err = mailer.NewSMTPSender(host, port, user, password)
+	smtp, err = mail.NewSMTPSender(host, port, user, password)
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	//The rendering engine, this is usually generated inside actions/render.go in your buffalo app.
 	r = render.New(render.Options{
 		TemplatesBox:   packr.NewBox("../templates"),
@@ -48,7 +48,7 @@ func init() {
 func SendContactMessage(c *models.Contact) error {
 
 	//Creates a new message
-	m := mailer.NewMessage()
+	m := mail.NewMessage()
 	m.From = "sender@myapp.com"
 	m.Subject = "New Contact"
 	m.To = []string{"contact@myapp.com"}
@@ -84,7 +84,7 @@ This `SendContactMessage` could be called by one of your actions, p.e. the actio
 func ContactFormHandler(c buffalo.Context) error {
     contact := &models.Contact{}
     c.Bind(contact)
-    
+
     //Calling to send the message
     SendContactMessage(contact)
     return c.Redirect(302, "contact/thanks")
@@ -96,23 +96,23 @@ If you're using Gmail or need to configure your SMTP connection you can use the 
 
 ```go
 ...
-var smtp mailer.Sender
+var smtp mail.Sender
 
 func init() {
-    port := envy.Get("SMTP_PORT", "465") 
-    // or 587 with TLS 
+    port := envy.Get("SMTP_PORT", "465")
+    // or 587 with TLS
 
 	host := envy.Get("SMTP_HOST", "smtp.gmail.com")
 	user := envy.Get("SMTP_USER", "your@email.com")
 	password := envy.Get("SMTP_PASSWORD", "yourp4ssw0rd")
 
 	var err error
-	sender, err := mailer.NewSMTPSender(host, port, user, password)
+	sender, err := mail.NewSMTPSender(host, port, user, password)
 	sender.Dialer.SSL = true
 
     //or if TLS
     sender.Dialer.TLSConfig = &tls.Config{...}
-    
+
     smtp = sender
 }
 ...
