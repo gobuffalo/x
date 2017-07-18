@@ -6,19 +6,26 @@ The following is an example on how to setup a smtp mailer as well as creating a 
 
 ```go
 //actions/mailer.go
+package x
 
 import (
-    "github.com/gobuffalo/x/mailer"
-    "github.com/gobuffalo/packr"
-    "github.com/me/myapp/models"
-    "github.com/pkg/errors"
+	"log"
+
 	"github.com/gobuffalo/buffalo/render"
+	"github.com/gobuffalo/envy"
+	"github.com/gobuffalo/packr"
+	"github.com/gobuffalo/plush"
+	"github.com/gobuffalo/x/mailer"
+	"github.com/pkg/errors"
+	"gitlab.com/wawandco/bg/models"
 )
 
 var smtp mailer.Sender
 var r *render.Engine
 
 func init() {
+	
+	//Pulling config from the env.
 	port := envy.Get("SMTP_PORT", "1025")
 	host := envy.Get("SMTP_HOST", "localhost")
 	user := envy.Get("SMTP_USER", "")
@@ -30,18 +37,19 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	
+	//The rendereing engine, usually in actions/render.go
 	r = render.New(render.Options{
 		HTMLLayout:     "application.html",
 		TemplateEngine: plush.BuffaloRenderer,
 		TemplatesBox:   packr.NewBox("../templates"),
-		Helpers: map[string]interface{}{},
-	}
+		Helpers:        map[string]interface{}{},
+	})
 }
 
 //SendContactMessage Sends contact message to contact@myapp.com
-func SendContactMessage(c *models.Contact) error {
-    
+func SendContactMessage(c *models.User) error {
+
 	//Creates a new message
 	m := mailer.NewMessage()
 	m.From = "sender@myapp.com"
