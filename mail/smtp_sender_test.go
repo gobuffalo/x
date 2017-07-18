@@ -1,4 +1,4 @@
-package mailer_test
+package mail_test
 
 import (
 	"bytes"
@@ -6,11 +6,11 @@ import (
 
 	"github.com/gobuffalo/buffalo/render"
 	"github.com/gobuffalo/x/fakesmtp"
-	"github.com/gobuffalo/x/mailer"
+	"github.com/gobuffalo/x/mail"
 	"github.com/stretchr/testify/require"
 )
 
-var sender mailer.Sender
+var sender mail.Sender
 var rend *render.Engine
 var smtpServer *fakesmtp.Server
 
@@ -19,7 +19,7 @@ const smtpPort = "2002"
 func init() {
 	rend = render.New(render.Options{})
 	smtpServer, _ = fakesmtp.New(smtpPort)
-	sender, _ = mailer.NewSMTPSender("127.0.0.1", smtpPort, "username", "password")
+	sender, _ = mail.NewSMTPSender("127.0.0.1", smtpPort, "username", "password")
 
 	go smtpServer.Start(smtpPort)
 }
@@ -28,7 +28,7 @@ func TestSendPlain(t *testing.T) {
 	smtpServer.Clear()
 	r := require.New(t)
 
-	m := mailer.Message{
+	m := mail.Message{
 		From:    "mark@example.com",
 		To:      []string{"something@something.com"},
 		Subject: "Cool Message",

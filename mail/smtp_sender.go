@@ -1,4 +1,4 @@
-package mailer
+package mail
 
 import (
 	"io"
@@ -56,12 +56,12 @@ func (sm SMTPSender) Send(message Message) error {
 	return nil
 }
 
-//NewSMTPSender builds a SMTP Mailer based in passed config.
+//NewSMTPSender builds a SMTP mail based in passed config.
 func NewSMTPSender(host string, port string, user string, password string) (SMTPSender, error) {
 	iport, err := strconv.Atoi(port)
 
 	if err != nil {
-		return SMTPSender{}, errors.New("invalid port for the SMTP mailer")
+		return SMTPSender{}, errors.New("invalid port for the SMTP mail")
 	}
 
 	dialer := &gomail.Dialer{
