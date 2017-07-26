@@ -22,13 +22,5 @@
 
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/gobuffalo/buffalo"
-
-[[constraint]]
-  name = "github.com/pkg/errors"
-  version = "0.8.0"
-
-[[constraint]]
   name = "gopkg.in/gomail.v2"
   revision = "81ebce5c23dfd25c6c67194b37d3dd3f338c98b1"
