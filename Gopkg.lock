@@ -38,10 +38,10 @@
   version = "v1.3"
 
 [[projects]]
+  branch = "master"
   name = "github.com/gobuffalo/buffalo"
   packages = [".","binding","render","worker"]
-  revision = "c4ed92ec651e944b3bd4f08cb35773fb22321b84"
-  version = "v0.9.2"
+  revision = "c3f96f92380ab07f6b27454fb5ae56cd5e0b1625"
 
 [[projects]]
   branch = "master"
@@ -327,6 +327,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "10ba326732079c092f66cfe1bc3ed98b15dcc8bcabef27ac0fd784a46a8a9744"
+  inputs-digest = "8f9e82a81939451718b399af29c886c79ea4aefb27afc2dd04dedf1f84f228fc"
   solver-name = "gps-cdcl"
   solver-version = 1

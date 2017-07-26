@@ -22,8 +22,8 @@
 
 
 [[constraint]]
+  branch = "master"
   name = "github.com/gobuffalo/buffalo"
-  version = "0.9.1"
 
 [[constraint]]
   name = "github.com/pkg/errors"
