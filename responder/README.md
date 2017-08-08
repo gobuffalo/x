@@ -12,7 +12,7 @@ For example, if you have a `UserList` `buffalo.Handler` that you want to be able
 func UserList(c buffalo.Context) error {
   // do some work
   return responder.Wants("html", func (c buffalo.Context) error {
-    return c.Render(200, r.HTML("some/template.html")
+    return c.Render(200, r.HTML("some/template.html"))
   }).Wants("json", func (c buffalo.Context) error {
     return c.Render(200, r.JSON(user))
   }).Respond(c)
@@ -22,7 +22,7 @@ func UserList(c buffalo.Context) error {
 func UserList(c buffalo.Context) error {
   // do some work
   res :=  responder.Wants("html", func (c buffalo.Context) error {
-    return c.Render(200, r.HTML("some/template.html")
+    return c.Render(200, r.HTML("some/template.html"))
   })
   res.Wants("json", func (c buffalo.Context) error {
     return c.Render(200, r.JSON(user))
