@@ -26,4 +26,3 @@ generated/
 .vendor/
 bin/*
 gin-bin
-vendor/
