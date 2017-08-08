@@ -2,7 +2,21 @@
 
 This package is intended to allow easy Email sending with Buffalo, it allows you to define your custom `mail.Sender` for the provider you would like to use.
 
-The following is an example on how to setup a smtp mailer as well as creating a Mailer function to use the
+## Generator Plugin
+
+There is a generator plugin for this package.
+
+```bash
+$ go install -v github.com/gobuffalo/x/mail/buffalo-mail
+```
+
+Once installed you can run the following in your Buffalo application directory:
+
+```bash
+$ buffalo generate mailer welcome_email
+```
+
+## Example Usage
 
 ```go
 //actions/mail.go
