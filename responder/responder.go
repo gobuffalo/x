@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/gobuffalo/buffalo"
+	"github.com/gobuffalo/x/httpx"
 	"github.com/markbates/going/defaults"
 	"github.com/pkg/errors"
 )
@@ -42,7 +43,7 @@ func UserList(c buffalo.Context) error {
 }
 */
 func (r Responder) Respond(ctx buffalo.Context) error {
-	ct := defaults.String(strings.ToLower(ctx.Request().Header.Get("Content-Type")), "html")
+	ct := defaults.String(httpx.ContentType(ctx.Request()), "html")
 	for w, h := range r.wants {
 		if strings.Contains(ct, strings.ToLower(w)) {
 			return h(ctx)
