@@ -28,13 +28,12 @@ func TestSendPlain(t *testing.T) {
 	smtpServer.Clear()
 	r := require.New(t)
 
-	m := mail.Message{
-		From:    "mark@example.com",
-		To:      []string{"something@something.com"},
-		Subject: "Cool Message",
-		CC:      []string{"other@other.com", "my@other.com"},
-		Bcc:     []string{"secret@other.com"},
-	}
+	m := mail.NewMessage()
+	m.From = "mark@example.com"
+	m.To = []string{"something@something.com"}
+	m.Subject = "Cool Message"
+	m.CC = []string{"other@other.com", "my@other.com"}
+	m.Bcc = []string{"secret@other.com"}
 
 	m.AddAttachment("someFile.txt", "text/plain", bytes.NewBuffer([]byte("hello")))
 	m.AddBody(rend.String("Hello <%= Name %>"), render.Data{"Name": "Antonio"})
