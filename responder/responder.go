@@ -48,6 +48,9 @@ func (r Responder) Respond(ctx buffalo.Context) error {
 			}
 		}
 	}
+	if h, ok := r.wants["html"]; ok {
+		return h(ctx)
+	}
 	return errors.New("could not find any matching handlers for this request")
 }
 
