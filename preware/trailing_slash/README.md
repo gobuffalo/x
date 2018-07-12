@@ -11,4 +11,4 @@ app = buffalo.New(buffalo.Options{
 
 ### Pre-wares:
 
-  1. **RemoveTrailingSlash:** This will check for if the requested path has a trailing slash and remove it.
+  1. **RemoveTrailingSlash:** This will check for if the requested path has a trailing slash and remove it, so `/foo/` will become `/foo` as far as the router is conserned. WARNING: THIS WILL BREAK YOUR ROUTING FOR A MAPPING IF YOU HAVE MAPPED THAT ROUTE WITH A TRAILING SLASH!
