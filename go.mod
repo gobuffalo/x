@@ -9,7 +9,6 @@ require (
 	github.com/gorilla/sessions v1.1.1
 	github.com/hpcloud/tail v1.0.0 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
-	github.com/markbates/going v1.0.1
 	github.com/markbates/inflect v1.0.0
 	github.com/onsi/ginkgo v1.6.0 // indirect
 	github.com/onsi/gomega v1.4.1 // indirect
