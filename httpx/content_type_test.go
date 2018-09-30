@@ -18,6 +18,9 @@ func Test_ContentType(t *testing.T) {
 		{"content-type", "a", "a"},
 		{"Content-Type", "c,d", "c"},
 		{"Content-Type", "e;f", "e"},
+		{"Content-Type", "", ""},
+		{"Accept", "", ""},
+		{"Accept", "*/*", ""},
 		{"Accept", "*/*;q=0.5, text/javascript, application/javascript, application/ecmascript, application/x-ecmascript", "text/javascript"},
 		{"accept", "text/javascript,application/javascript,application/ecmascript,application/x-ecmascript", "text/javascript"},
 	}
