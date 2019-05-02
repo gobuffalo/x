@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// This will check for if the requested path has a known file extention and will
+// AutoSetContentType will check for if the requested path has a known file extention and will
 // properly remove it and set the content-type if it is not already set. Header
 // Content-Type takes precedence.
 func AutoSetContentType(h http.Handler) http.Handler {
