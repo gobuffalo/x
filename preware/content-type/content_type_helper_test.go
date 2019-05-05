@@ -6,7 +6,7 @@ import (
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/buffalo/render"
 	"github.com/gobuffalo/httptest"
-	"github.com/gobuffalo/packr"
+	"github.com/gobuffalo/packr/v2"
 	"github.com/stretchr/testify/require"
 )
 
@@ -21,7 +21,7 @@ func app(name string) *buffalo.App {
 	})
 
 	r := render.New(render.Options{
-		TemplatesBox: packr.NewBox("./fixtures/test_templates"),
+		TemplatesBox: packr.New("HTML Templates", "./fixtures/test_templates"),
 	})
 
 	app.GET("/content", func(c buffalo.Context) error {
