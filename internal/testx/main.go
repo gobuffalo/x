@@ -1,26 +1,37 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"golang.org/x/tools/go/packages"
 )
 
 func main() {
 	c := exec.Command("go", "env", "GOMOD")
 	b, err := c.CombinedOutput()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("GOMOD", err)
 	}
 
+	var root string
+
+	b = bytes.TrimSpace(b)
 	if len(b) == 0 {
-		log.Fatal("we need modules")
+		pwd, err := os.Getwd()
+		if err != nil {
+			log.Fatal("PWD", err)
+		}
+		root = pwd
+	} else {
+		root = filepath.Dir(string(b))
 	}
 
-	root := strings.TrimSpace(string(b))
-	root = filepath.Dir(root)
 	err = filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -39,29 +50,28 @@ func main() {
 			return filepath.SkipDir
 		}
 
-		f, err := os.Open(path)
-		if err != nil {
-			return err
+		cfg := &packages.Config{
+			Mode: packages.NeedFiles,
 		}
-		infos, err := f.Readdir(-1)
+		pkgs, err := packages.Load(cfg)
 		if err != nil {
-			return err
+			log.Fatalf("error loading packages: %s, %s", path, err)
 		}
 
-		var found bool
-		for _, i := range infos {
-			if strings.HasSuffix(i.Name(), "_test.go") {
-				found = true
-				break
-			}
+		if len(pkgs) < 1 {
+			return filepath.SkipDir
 		}
-		if !found {
-			return nil
+
+		pkg := pkgs[0]
+		if len(pkg.GoFiles) == 0 {
+			return filepath.SkipDir
 		}
 
 		args := []string{"test"}
 		args = append(args, os.Args[1:]...)
 		c := exec.Command("go", args...)
+		fmt.Printf(">  %s\n", path)
+		fmt.Println("> ", strings.Join(c.Args, " "))
 		c.Stdin = os.Stdin
 		c.Stdout = os.Stdout
 		c.Stderr = os.Stderr
