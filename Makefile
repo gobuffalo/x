@@ -1,7 +1,7 @@
 TAGS ?= ""
 GO_BIN ?= "go"
 
-install: 
+install:
 	$(GO_BIN) install -tags ${TAGS} -v .
 	make tidy
 
@@ -16,18 +16,22 @@ deps:
 	$(GO_BIN) get -tags ${TAGS} -t ./...
 	make tidy
 
-build: 
+build:
 	$(GO_BIN) build -v .
 	make tidy
 
-test: 
-	$(GO_BIN) test -cover -tags ${TAGS} ./...
+test:
+	cd defaults; $(GO_BIN) test -cover -tags ${TAGS} ./...
+	cd fakesmtp; $(GO_BIN) test -cover -tags ${TAGS} ./...
+	cd httpx; $(GO_BIN) test -cover -tags ${TAGS} ./...
+	cd randx; $(GO_BIN) test -cover -tags ${TAGS} ./...
+	cd sessions; $(GO_BIN) test -cover -tags ${TAGS} ./...
 	make tidy
 
-ci-deps: 
+ci-deps:
 	$(GO_BIN) get -tags ${TAGS} -t ./...
 
-ci-test: 
+ci-test:
 	$(GO_BIN) test -tags ${TAGS} -race ./...
 
 lint:
@@ -47,7 +51,7 @@ endif
 	make install
 	make tidy
 
-release-test: 
+release-test:
 	$(GO_BIN) test -tags ${TAGS} -race ./...
 	make tidy
 
